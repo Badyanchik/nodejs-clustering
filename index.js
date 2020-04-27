@@ -1,10 +1,10 @@
-const cluster = require('cluster');
+const index = require('cluster');
 const os = require('os');
 
 const pid = process.pid;
 
 const startWorker = () => {
-    const worker = cluster.fork();
+    const worker = index.fork();
     worker.on('exit', () => {
         console.log(`Worker died. Pid: ${worker.process.pid}`);
         startWorker();
@@ -15,7 +15,7 @@ const startWorker = () => {
     })
 }
 
-if (cluster.isMaster) {
+if (index.isMaster) {
     const cpusCount = os.cpus().length;
     console.log(`CPUs: ${cpusCount}`);
     console.log(`Master cluster started; Pid ${pid}`);
@@ -24,7 +24,7 @@ if (cluster.isMaster) {
     }
 }
 
-if (cluster.isWorker) {
+if (index.isWorker) {
     require('./worker');
     process.on('message', message => {
         console.log(`Message from master: ${message}`);
